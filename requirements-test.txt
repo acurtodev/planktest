@@ -1,0 +1,7 @@
+# Test's requirements
+-r requirements.txt
+
+pytest==6.0.1
+pytest-django==4.1.0
+coverage==4.5.4
+pytest-factoryboy==2.3.1

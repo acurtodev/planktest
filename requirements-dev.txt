@@ -1,0 +1,6 @@
+# Development requirements
+-r requirements-test.txt
+
+flake8==3.9.2
+ipython==7.26.0
+ipdb==0.13.9
