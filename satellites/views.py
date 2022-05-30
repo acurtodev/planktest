@@ -11,7 +11,12 @@ satellites_api = NinjaAPI(title="Satellites API", docs_url="/")
 
 @satellites_api.post("create")
 def create(request, name: str, latitude: float, longitude: float):
-    """Create a new satellite."""
+    """Create a new satellite.
+
+    ### Restrictions:
+        - latitude in [-90, 90]
+        - longitude in [-180, 180]
+    """
     data = {"latitude": latitude, "longitude": longitude}
     serializer = SatellitesCoordinatesSerializer(data=data)
     if not serializer.is_valid():
@@ -57,7 +62,12 @@ def get_by_name(request, name: str):
 
 @satellites_api.get("get-by-position")
 def get_by_position(request, latitude: float, longitude: float, distance: float):
-    """Get satellites located less than distance from (latitude, longitude)."""
+    """Get satellites located less than distance from (latitude, longitude).
+
+    ### Restrictions:
+        - latitude in [-90, 90]
+        - longitude in [-180, 180]
+    """
     data = {"latitude": latitude, "longitude": longitude}
     serializer = SatellitesCoordinatesSerializer(data=data)
     if not serializer.is_valid():
