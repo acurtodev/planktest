@@ -3,6 +3,8 @@ from django.http import HttpResponse
 
 from satellites.models import Satellite
 from satellites.distance import get_near_satellites
+from satellites.serializers import SatellitesCoordinatesSerializer
+
 
 satellites_api = NinjaAPI(title="Satellites API", docs_url="/")
 
@@ -10,7 +12,12 @@ satellites_api = NinjaAPI(title="Satellites API", docs_url="/")
 @satellites_api.post("create")
 def create(request, name: str, latitude: float, longitude: float):
     """Create a new satellite."""
-    satellite = Satellite(name=name, latitude=latitude, longitude=longitude)
+    data = {"latitude": latitude, "longitude": longitude}
+    serializer = SatellitesCoordinatesSerializer(data=data)
+    if not serializer.is_valid():
+        return HttpResponse(status=400)
+    serializer.validated_data.update({"name": name})
+    satellite = Satellite(**serializer.validated_data)
     satellite.save()
     return satellite.to_json()
 
@@ -51,5 +58,9 @@ def get_by_name(request, name: str):
 @satellites_api.get("get-by-position")
 def get_by_position(request, latitude: float, longitude: float, distance: float):
     """Get satellites located less than distance from (latitude, longitude)."""
+    data = {"latitude": latitude, "longitude": longitude}
+    serializer = SatellitesCoordinatesSerializer(data=data)
+    if not serializer.is_valid():
+        return HttpResponse(status=400)
     near_satellites = get_near_satellites(latitude, longitude, distance)
     return near_satellites
